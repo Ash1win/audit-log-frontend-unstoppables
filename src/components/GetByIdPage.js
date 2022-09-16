@@ -2,6 +2,7 @@ import { useState } from "react"
 import { getPlanById } from "../services/fetchService"
 import { useLocation } from "react-router-dom"
 import { toast } from "react-toastify"
+import { search, searchById } from "../services/fetchService2"
 
 
 export default function GetByIdPage() {
@@ -11,27 +12,38 @@ export default function GetByIdPage() {
 
     const [id, setID] = useState('')
 
-    const [plan, setPlan] = useState({})
+    const [logs, setLogs] = useState(null)
+
+    const [opType, setOpType] = useState("id")
+
+    function handleOpType(e) {
+        setOpType(e.target.value)
+    }
 
     function handleId(e) {
         setID(e.target.value)
     }
 
     function doGet() {
-        console.log("called++++++++++++++++++++++++++")
-        getPlanById(id).then((res) => {
-            console.log(res)
-            console.log(id)
-            setPlan(res)
-        }).catch((ex) => {
-            console.log(ex)
-            toast.error("id does not exist")
-        })
+
+        if(opType === "id") {
+            searchById(id).then((res) => {
+                setLogs(res)
+                console.log(res)
+            })
+        }else {
+            search(id,opType).then((res) => {
+                setLogs(res)
+                console.log(res)
+            })
+        }
+
+        
     }
 
     function doReset() {
         setID('')
-        setPlan({})
+        setLogs(null)
     }
 
     return (
@@ -44,15 +56,16 @@ export default function GetByIdPage() {
 
                 <div class="flex flex-row pt-5">
                     <div>
-                        <input type="text" id="name" class="bg-gray-50 border m-5 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder=" Enter Keyword" required="">
+                        <input type="text" id="name" onChange={handleId} value={id} class="bg-gray-50 border m-5 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder=" Enter Keyword" required="">
                         </input>
                     </div>
 
                     <div>
-                        <select id="countries" class="bg-gray-50 border m-5 ml-0 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-50 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <select id="countries" onChange={handleOpType} value={opType} class="bg-gray-50 border m-5 ml-0 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-50 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option selected>Select Type</option>
-                            <option value="operation-type">Operation Type</option>
-                            <option value="entity-json">Entity JSON</option>
+                            <option value="operation">opeartion</option>
+                            <option value="entity">description</option>
+                            <option value="id">id</option>
                            
                         </select>
                     </div>
@@ -84,21 +97,26 @@ export default function GetByIdPage() {
                     </thead>
                     <tbody>
                         {
-                            plan && <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                            
+                            logs && logs.map((log) => {
+                                return (
+                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                 <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    {plan.id}
+                                    {log.id}
                                 </th>
                                 <td class="py-4 px-6">
-                                    {plan.name}
+                                    {log.operationType}
                                 </td>
                                 <td class="py-4 px-6">
-                                    {plan.description}
+                                    {log.entityJson}
                                 </td>
                                 <td class="py-4 px-6">
-                                    {plan.validity}
+                                    {log.modificationDate}
                                 </td>
 
                             </tr>
+                                )
+                            })
                         }
 
                     </tbody>

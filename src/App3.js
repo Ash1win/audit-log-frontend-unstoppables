@@ -11,7 +11,7 @@ export default function App3() {
     <div class="container flex flex-wrap justify-between items-center mx-auto">
       <div href="#" class="flex items-center">
         {/* hansen logo*/}
-          <a href="https://localhost:3000/mp/"><img src={mobileplanlogo} class="h-12 w-48" alt="Hansen Tech." /></a>
+          <a href="http://localhost:3000/"><img src={mobileplanlogo} class="h-12 w-48" alt="Hansen Tech." /></a>
           
         {/* logo */}
         <img src={logo2} class="ml-4 h-12 w-10" alt="Mobile Plan" />

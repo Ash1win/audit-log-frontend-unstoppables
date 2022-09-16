@@ -5,146 +5,37 @@ import { NavLink } from "react-router-dom";
 import { useLocation } from "react-router-dom"
 import Trash from "../icons/icons";
 import { toast } from "react-toastify";
+import { getAllLogs } from "../services/fetchService2";
 
 
 export default function ShowPlansPage() {
 
-    const [AllLogs, setAllLogs] = useState([
-        {
-            "id" : "1",
-            "logs" : 'id:"9006",name:"Monthly pack",description:"2 gb/par day",validity:28',
-            "modification_date" : "2022-09-14 12:29:04.946000",
-            "operation_type" : "CREATE"
-        },
-        
-        {
-            "id" : "2",
-            "logs" : 'id:"9006",name:"Monthly pack",description:"2 gb/par day",validity:28',
-            "modification_date" : "2022-09-14 12:29:04.946000",
-            "operation_type" : "CREATE"
-        },
-        
-        {
-            "id" : "3",
-            "logs" : 'id:"9006",name:"Monthly pack",description:"2 gb/par day",validity:28',
-            "modification_date" : "2022-09-14 12:29:04.946000",
-            "operation_type" : "CREATE"
-        },
-        
-        {
-            "id" : "4",
-            "logs" : 'id:"9006",name:"Monthly pack",description:"2 gb/par day",validity:28',
-            "modification_date" : "2022-09-14 12:29:04.946000",
-            "operation_type" : "CREATE"
-        },
-        
-        {
-            "id" : "5",
-            "logs" : 'id:"9006",name:"Monthly pack",description:"2 gb/par day",validity:28',
-            "modification_date" : "2022-09-14 12:29:04.946000",
-            "operation_type" : "CREATE"
-        },
-        
-        {
-            "id" : "6",
-            "logs" : 'id:"9006",name:"Monthly pack",description:"2 gb/par day",validity:28',
-            "modification_date" : "2022-09-14 12:29:04.946000",
-            "operation_type" : "CREATE"
-        },
-        
-        {
-            "id" : "7",
-            "logs" : 'id:"9006",name:"Monthly pack",description:"2 gb/par day",validity:28',
-            "modification_date" : "2022-09-14 12:29:04.946000",
-            "operation_type" : "CREATE"
-        },
-        
-        {
-            "id" : "8",
-            "logs" : 'id:"9006",name:"Monthly pack",description:"2 gb/par day",validity:28',
-            "modification_date" : "2022-09-14 12:29:04.946000",
-            "operation_type" : "CREATE"
-        },
-        
-        {
-            "id" : "9",
-            "logs" : 'id:"9006",name:"Monthly pack",description:"2 gb/par day",validity:28',
-            "modification_date" : "2022-09-14 12:29:04.946000",
-            "operation_type" : "CREATE"
-        },
-        
-        {
-            "id" : "10",
-            "logs" : 'id:"9006",name:"Monthly pack",description:"2 gb/par day",validity:28',
-            "modification_date" : "2022-09-14 12:29:04.946000",
-            "operation_type" : "CREATE"
-        },
-        
-        {
-            "id" : "11",
-            "logs" : 'id:"9006",name:"Monthly pack",description:"2 gb/par day",validity:28',
-            "modification_date" : "2022-09-14 12:29:04.946000",
-            "operation_type" : "CREATE"
-        },
-        
-        {
-            "id" : "12",
-            "logs" : 'id:"9006",name:"Monthly pack",description:"2 gb/par day",validity:28',
-            "modification_date" : "2022-09-14 12:29:04.946000",
-            "operation_type" : "CREATE"
-        },
-        
-        {
-            "id" : "13",
-            "logs" : 'id:"9006",name:"Monthly pack",description:"2 gb/par day",validity:28',
-            "modification_date" : "2022-09-14 12:29:04.946000",
-            "operation_type" : "CREATE"
-        },
-        
-        {
-            "id" : "14",
-            "logs" : 'id:"9006",name:"Monthly pack",description:"2 gb/par day",validity:28',
-            "modification_date" : "2022-09-14 12:29:04.946000",
-            "operation_type" : "CREATE"
-        },
-        
-        {
-            "id" : "15",
-            "logs" : 'id:"9006",name:"Hotstart subscription pack",description:"2 gb/par day",validity:28',
-            "modification_date" : "2022-09-14 12:29:04.946000",
-            "operation_type" : "CREATE"
-        },
-
-        
-        {
-            "id" : "16",
-            "logs" : 'id:"9006",name:"Hotstart subscription pack",description:"2 gb/par day",validity:28',
-            "modification_date" : "2022-09-14 12:29:04.946000",
-            "operation_type" : "CREATE"
-        }
-
-        ])
+    const [AllLogs, setAllLogs] = useState([])
     const [logs, setLogs] = useState([])
-    const [incr, setIncr] = useState(7)
+    const [incr, setIncr] = useState(5)
     const [startIndex, setStartIndex] = useState(0)
-    const[endIndex, setEndIndex] = useState(7)
+    const[endIndex, setEndIndex] = useState(5)
 
 
 
     useEffect(() => {
-        getAllPlans().then((res) => {
+        getAllLogs().then((res) => {
             setAllLogs(res.reverse());
             setLogs(res.slice(startIndex,endIndex))
         })
+
+        // getAllLogs().then((res) => {
+        //     console.log(res)
+        // })
         
-    }, [startIndex, endIndex, AllLogs])
+    }, [startIndex, endIndex])
 
 
     useMemo(()=>{
 
         setLogs(AllLogs.slice(startIndex,endIndex))
 
-    },[AllLogs, startIndex, endIndex])
+    },[ startIndex, endIndex])
 
 
     function increment(){
@@ -190,7 +81,7 @@ export default function ShowPlansPage() {
                     <th scope="col" class="w-12 py-3 px-6">
                         Sr No.
                     </th>
-                    <th scope="col" class="w-92 py-3 px-6">
+                    <th scope="col" class="w-64 py-3 px-6">
                         Logs
                     </th>
                     <th scope="col" class="w-56 py-3 px-6">
@@ -208,14 +99,14 @@ export default function ShowPlansPage() {
                     <th scope="row" class="w-12 py-3 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         {log.id}
                     </th>
-                    <td class="w-92 py-3 px-6">
-                        {log.logs}
+                    <td class="w-64 py-3 px-6">
+                        {log.entityJson}
                     </td>
                     <td class="w-56 py-3 px-6">
-                        {log.modification_date}
+                        {log.modificationDate}
                     </td>
                     <td class="w-28 py-3 px-6">
-                        {log.operation_type}
+                        {log.operationType}
                     </td>
 
                 </tr>
