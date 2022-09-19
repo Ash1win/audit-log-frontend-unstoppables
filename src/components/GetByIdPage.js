@@ -8,6 +8,7 @@ import { search, searchById } from "../services/fetchService2"
 export default function GetByIdPage() {
 
     // console.log(useLocation().pathname)
+    //
 
 
     const [id, setID] = useState('')
