@@ -1,63 +1,65 @@
 const url = "http://localhost:8080/mp"
 
+// Get All Plans 
 
-//GET
 export async function getAllPlans() {
 
-  const response = await fetch(url, {
-    method: 'GET'
-  })
+    const response = await fetch(url, {
+        method: 'GET'
+    })
 
-  return response.json()
+    return response.json()
 
 }
 
-//GET (plan by id)
+// GET plan based on id 
+
 export async function getPlanById(id) {
-  const response = await fetch(url+"/"+id, {
-    method: 'GET'
-  })
+    const response = await fetch(url + "/" + id, {
+        method: 'GET'
+    })
 
-  return response.json()
+    return response.json()
 }
 
-//POST
+// POST
+
 export async function createPlan(data) {
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    //redirect: 'follow',
-    //referrerPolicy: 'no-referrer', 
-    body: JSON.stringify(data)
-  });
-  return response.json();
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+    return response.json();
 
 }
 
-//PATCH
+// PATCH
+
 export async function updatePlan(data) {
 
-  const response = await fetch(url, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    const response = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
 
-    body: JSON.stringify(data)
-  });
+        body: JSON.stringify(data)
+    });
 
-  return response.ok;
+    return response.ok;
 
 }
 
-//DELETE
-export async function deletePlan(id) {
-  const response = await fetch(url+"/"+id, {
-    method: 'DELETE',
-  })
+// DELETE
 
-  return response.ok
+export async function deletePlan(id) {
+    const response = await fetch(url + "/" + id, {
+        method: 'DELETE',
+    })
+
+    return response.ok
 }
