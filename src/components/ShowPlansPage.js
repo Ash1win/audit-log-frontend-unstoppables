@@ -52,7 +52,7 @@ export default function ShowPlansPage() {
             <h3 class="text-center text-white text-lg pt-1"><b>All Audit Logs</b></h3>
             <center><hr class="w-56 my-2 h-px bg-gray-200 border-0 dark:bg-gray-700"></hr></center>
 
-            <div class="w-120 flexflex-shrink-0">
+            <div class="w-120 flex">
 
                 {/*Buttons for increment and decrement*/}
 
