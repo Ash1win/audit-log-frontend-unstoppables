@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 import { getAllLogs } from "../services/fetchService2";
+import { toast } from "react-toastify";
 
 export default function ShowPlansPage() {
 
@@ -8,6 +9,17 @@ export default function ShowPlansPage() {
     const [incr, setIncr] = useState(5)
     const [startIndex, setStartIndex] = useState(0)
     const [endIndex, setEndIndex] = useState(5)
+    const [srchType, setSrchType] = useState('id')
+    const [searchText, setSearchText] = useState('')
+    const [isSearching, setIsSearching] = useState(false)
+    const [iVal, setIVal] = useState(6)
+
+    const [sAllsrch, setSAllsrch] = useState('')
+    const [sCurrsrch, setSCurrsrch] = useState('')
+
+    //increment decrement states pagination for search
+    const [si, setSi] = useState(0) //start index
+    const [ee, setEe] = useState(6) //end index
 
 
     useEffect(() => {
@@ -23,6 +35,12 @@ export default function ShowPlansPage() {
         setLogs(AllLogs.slice(startIndex, endIndex))
 
     }, [startIndex, endIndex])
+
+    useMemo(() => {
+        setSCurrsrch(sAllsrch.slice(si, ee))
+        console.log(si+' '+ee)
+        
+    }, [si, ee])
 
     //Function for increment 
 
@@ -43,6 +61,77 @@ export default function ShowPlansPage() {
     }
 
 
+    function handleSearchSelect(e) {
+        setSrchType(e.target.value)
+    }
+
+
+    function handleSearch(e) {
+        setSearchText(e.target.value)
+    }
+
+
+    function search() {
+        console.log(searchText)
+        if (searchText === '') {
+            setIsSearching(false)
+        } else {
+            setIsSearching(true)
+        
+            if (srchType === 'id') {
+                if (isNaN(searchText)) {
+                    toast.error("ID should be a number")
+                }
+                console.log(AllLogs)
+                let searchResult = AllLogs.filter((logs) => logs.entityJson.toLowerCase().includes(searchText.toLowerCase()))
+                console.log(searchResult)
+                setSAllsrch(searchResult)
+                setSi(0)
+                setEe(6)
+                setSCurrsrch(searchResult.slice(si, ee))
+            } else if (srchType === 'operation') {
+                let searchResult = AllLogs.filter((logs) => logs.operationType.toLowerCase().includes(searchText.toLowerCase()))
+                console.log(searchResult)
+                setSAllsrch(searchResult)
+                setSi(0)
+                setEe(6)
+                setSCurrsrch(searchResult.slice(si, ee))
+            } else if (srchType === 'entity') {
+                let searchResult = AllLogs.filter((logs) => logs.entityJson.toLowerCase().includes(searchText.toLowerCase()))
+                console.log(searchResult)
+                setSAllsrch(searchResult)
+                setSi(0)
+                setEe(6)
+                setSCurrsrch(searchResult.slice(si, ee))
+            }
+        }
+
+    }
+
+
+    function sIncrement(){
+        if((sAllsrch.length - si) <= iVal) {
+            if(si < sAllsrch.length-1) {
+                setSi(si++)
+            }
+            setEe(sAllsrch.length)
+        }else {
+            setSi(si+iVal)
+            setEe(ee+iVal)
+        }
+        console.log("sIncr")
+    }
+
+    function sDecrement(){
+        if((si-iVal) >= 0) {
+            setSi(si-iVal)
+            setEe(ee-iVal)
+        }
+        console.log("sDcr")
+
+    }
+
+
     return (
 
         <div className="w-120 mb-32">
@@ -52,11 +141,49 @@ export default function ShowPlansPage() {
             <h3 class="text-center text-white text-lg pt-1"><b>All Audit Logs</b></h3>
             <center><hr class="w-56 my-2 h-px bg-gray-200 border-0 dark:bg-gray-700"></hr></center>
 
-            <div class="w-120 flex">
+            <div class="w-120 ">
+
+                <div>
+                    <div class="flex">
+                        {/* <label for="search-dropdown" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Your Email</label> */}
+                        {/* <button id="dropdown-button" data-dropdown-toggle="dropdown" class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" type="button">All categories <svg aria-hidden="true" class="ml-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button> */}
+                        <select onChange={handleSearchSelect} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100" aria-labelledby="dropdown-button">
+                            <option selected value="id" className="inline-flex py-2 px-4 w-full hover:bg-gray-100">ID</option>
+                            <option value="operation" >Operation</option>
+                            <option value="entity" >Entity </option>
+                        </select>
+                        <div id="dropdown" class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700" data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top">
+
+                        </div>
+                        <div class="relative w-full">
+                            <input type="search" id="search-dropdown" value={searchText} onChange={handleSearch} class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg border-l-gray-50 border-l-2 border border-gray-300"
+                                placeholder="Search for Audit Logs" />
+
+                            {isSearching && <button
+                                className="text-red-500 text-3xl absolute top-0 shadow-sm"
+                                style={{ right: 50 }}
+                                onClick={() => {
+                                    setSearchText('')
+                                    setIsSearching(false)
+                                }}
+                            >
+                                x
+                            </button>}
+
+                            <button type="submit" onClick={search} className="absolute top-0 right-0 p-2.5 text-sm font-medium text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <span class="sr-only">Search</span>
+                            </button>
+                            {/* style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate3d(897px, 5637px, 0px);" */}
+                        </div>
+                    </div>
+                </div>
+
+
 
                 {/*Buttons for increment and decrement*/}
 
-                <div className="w-120 flex justify-center">
+                { !isSearching && <div className="w-120 flex justify-center">
                     <button class="text-white p-1 bg-blue" onClick={decrement}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -69,11 +196,27 @@ export default function ShowPlansPage() {
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </button>
-                </div>
+                </div>}
+
+
+                { isSearching && <div className="w-120 flex justify-center">
+                    <button class="text-white p-1 bg-blue" onClick={sDecrement}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </button>
+
+
+                    <button class="text-white p-1 bg-blue" onClick={sIncrement}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </button>
+                </div>}
 
                 {/*Table to show all logs*/}
 
-                <table class="mt-5 table-fixed text-sm text-left text-gray-800 dark:text-gray-400 ">
+                { !isSearching && <table class="mt-5 table-fixed text-sm text-left text-gray-800 dark:text-gray-400 ">
 
                     <thead class="text-xs text-white bg-slate-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr class="w-120">
@@ -93,27 +236,73 @@ export default function ShowPlansPage() {
                     </thead>
 
                     <tbody>
-                        {logs && logs.map((log) => {
+                        {logs && logs.map((logs) => {
                             return (
                                 <tr class="w-120 bg-white dark:bg-gray-800">
                                     <th scope="row" class="w-12 py-3 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {log.id}
+                                        {logs.id}
                                     </th>
                                     <td class="w-64 py-3 px-6">
-                                        {log.entityJson}
+                                        {logs.entityJson}
                                     </td>
                                     <td class="w-56 py-3 px-6">
-                                        {log.modificationDate}
+                                        {logs.modificationDate}
                                     </td>
                                     <td class="w-28 py-3 px-6">
-                                        {log.operationType}
+                                        {logs.operationType}
                                     </td>
                                 </tr>
                             )
                         })}
 
                     </tbody>
-                </table>
+                </table>}
+
+                {isSearching && <table class="mt-5 table-fixed text-sm text-left text-gray-800 dark:text-gray-400 ">
+
+                    <thead class="text-xs text-white bg-slate-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr class="w-120">
+                            <th scope="col" class="w-12 py-3 px-6">
+                                Sr No.
+                            </th>
+                            <th scope="col" class="w-64 py-3 px-6">
+                                Logs
+                            </th>
+                            <th scope="col" class="w-56 py-3 px-6">
+                                Modification Date
+                            </th>
+                            <th scope="col" class="w-28 py-3 px-6">
+                                Operation Type
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {sCurrsrch && sCurrsrch.map((logs) => {
+                            return (
+                                <tr class="w-120 bg-white dark:bg-gray-800">
+                                    <th scope="row" class="w-12 py-3 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        {logs.id}
+                                    </th>
+                                    <td class="w-64 py-3 px-6">
+                                        {logs.entityJson}
+                                    </td>
+                                    <td class="w-56 py-3 px-6">
+                                        {logs.modificationDate}
+                                    </td>
+                                    <td class="w-28 py-3 px-6">
+                                        {logs.operationType}
+                                    </td>
+                                </tr>
+                            )
+                        })}
+
+                    </tbody>
+                </table>}
+                {(sCurrsrch.length <= 0 && isSearching) && <div class="p-4 mb-4 mt-4 text-sm text-yellow-700 bg-yellow-100 rounded-lg dark:bg-yellow-200 dark:text-yellow-800" role="alert">
+                    <span class="font-medium">No logs found !</span> Change a few things up and try searching again.
+                </div>}
+
             </div>
 
         </div>
