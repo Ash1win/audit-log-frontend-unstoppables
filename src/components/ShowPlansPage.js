@@ -6,20 +6,20 @@ export default function ShowPlansPage() {
 
     const [AllLogs, setAllLogs] = useState([])
     const [logs, setLogs] = useState([])
-    const [incr, setIncr] = useState(5)
+    const [incr, setIncr] = useState(8)
     const [startIndex, setStartIndex] = useState(0)
-    const [endIndex, setEndIndex] = useState(5)
+    const [endIndex, setEndIndex] = useState(7)
     const [srchType, setSrchType] = useState('id')
     const [searchText, setSearchText] = useState('')
     const [isSearching, setIsSearching] = useState(false)
-    const [iVal, setIVal] = useState(6)
+    const [iVal, setIVal] = useState(8)
 
     const [sAllsrch, setSAllsrch] = useState('')
     const [sCurrsrch, setSCurrsrch] = useState('')
 
     //increment decrement states pagination for search
     const [si, setSi] = useState(0) //start index
-    const [ee, setEe] = useState(6) //end index
+    const [ee, setEe] = useState(7) //end index
 
 
     useEffect(() => {
@@ -81,27 +81,37 @@ export default function ShowPlansPage() {
             if (srchType === 'id') {
                 if (isNaN(searchText)) {
                     toast.error("ID should be a number")
+                    return;
                 }
                 console.log(AllLogs)
-                let searchResult = AllLogs.filter((logs) => logs.entityJson.toLowerCase().includes(searchText.toLowerCase()))
+                let searchResult = AllLogs.filter((logs) => {
+                    // logs.entityJson.toLowerCase().includes(searchText.toLowerCase())
+                    let myString = logs.entityJson.toLowerCase();
+                    let word = searchText.toLowerCase();
+                    let pattern = `\\b${word}\\b`;
+                    let regExp = new RegExp(pattern, 'g');
+                    let isMatch = regExp.test(myString)
+                    return isMatch;
+                    
+                })
                 console.log(searchResult)
                 setSAllsrch(searchResult)
                 setSi(0)
-                setEe(6)
+                setEe(7)
                 setSCurrsrch(searchResult.slice(si, ee))
             } else if (srchType === 'operation') {
                 let searchResult = AllLogs.filter((logs) => logs.operationType.toLowerCase().includes(searchText.toLowerCase()))
                 console.log(searchResult)
                 setSAllsrch(searchResult)
                 setSi(0)
-                setEe(6)
+                setEe(7)
                 setSCurrsrch(searchResult.slice(si, ee))
             } else if (srchType === 'entity') {
                 let searchResult = AllLogs.filter((logs) => logs.entityJson.toLowerCase().includes(searchText.toLowerCase()))
                 console.log(searchResult)
                 setSAllsrch(searchResult)
                 setSi(0)
-                setEe(6)
+                setEe(7)
                 setSCurrsrch(searchResult.slice(si, ee))
             }
         }
@@ -134,14 +144,14 @@ export default function ShowPlansPage() {
 
     return (
 
-        <div className="w-120 mb-32">
+        <div className="m-0 mt-0 mb-24">
 
             {/*Heading*/}
 
             <h3 class="text-center text-white text-lg pt-1"><b>All Audit Logs</b></h3>
             <center><hr class="w-56 my-2 h-px bg-gray-200 border-0 dark:bg-gray-700"></hr></center>
 
-            <div class="w-120 ">
+            <div class="flex flex-col p-10 pt-0">
 
                 <div>
                     <div class="flex">
@@ -150,7 +160,7 @@ export default function ShowPlansPage() {
                         <select onChange={handleSearchSelect} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100" aria-labelledby="dropdown-button">
                             <option selected value="id" className="inline-flex py-2 px-4 w-full hover:bg-gray-100">ID</option>
                             <option value="operation" >Operation</option>
-                            <option value="entity" >Entity </option>
+                            <option value="entity" >Logs </option>
                         </select>
                         <div id="dropdown" class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700" data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top">
 
@@ -216,20 +226,20 @@ export default function ShowPlansPage() {
 
                 {/*Table to show all logs*/}
 
-                { !isSearching && <table class="mt-5 table-fixed text-sm text-left text-gray-800 dark:text-gray-400 ">
+                { !isSearching && <table class="w-full table-fixed text-sm text-left text-gray-800 dark:text-gray-400 ">
 
                     <thead class="text-xs text-white bg-slate-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr class="w-120">
-                            <th scope="col" class="w-12 py-3 px-6">
+                        <tr>
+                            <th scope="col" class="py-3 px-6 w-16">
                                 Sr No.
                             </th>
-                            <th scope="col" class="w-64 py-3 px-6">
+                            <th scope="col" class="py-3 px-6 w-64">
                                 Logs
                             </th>
-                            <th scope="col" class="w-56 py-3 px-6">
+                            <th scope="col" class="py-3 px-6 w-32">
                                 Modification Date
                             </th>
-                            <th scope="col" class="w-28 py-3 px-6">
+                            <th scope="col" class="py-3  w-16">
                                 Operation Type
                             </th>
                         </tr>
@@ -238,17 +248,20 @@ export default function ShowPlansPage() {
                     <tbody>
                         {logs && logs.map((logs) => {
                             return (
-                                <tr class="w-120 bg-white dark:bg-gray-800">
-                                    <th scope="row" class="w-12 py-3 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <tr class="bg-white dark:bg-gray-800">
+                                    <th scope="row" class="py-2 px-6 w-16 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {logs.id}
                                     </th>
-                                    <td class="w-64 py-3 px-6">
+                                    <td class="py-2 px-6 w-64">
                                         {logs.entityJson}
                                     </td>
-                                    <td class="w-56 py-3 px-6">
-                                        {logs.modificationDate}
+                                    <td class="py-2 px-6 w-32">
+                                        {new Date(logs.modificationDate).toDateString()}
+                                        <span>  </span>
+                                        {new Date(logs.modificationDate).toLocaleTimeString()}
+                                        <span> IST</span>
                                     </td>
-                                    <td class="w-28 py-3 px-6">
+                                    <td class="py-2 px-6 w-16 ">
                                         {logs.operationType}
                                     </td>
                                 </tr>
@@ -258,20 +271,20 @@ export default function ShowPlansPage() {
                     </tbody>
                 </table>}
 
-                {isSearching && <table class="mt-5 table-fixed text-sm text-left text-gray-800 dark:text-gray-400 ">
+                {isSearching && <table class="w-full table-fixed text-sm text-left text-gray-800 dark:text-gray-400 ">
 
                     <thead class="text-xs text-white bg-slate-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr class="w-120">
-                            <th scope="col" class="w-12 py-3 px-6">
+                        <tr>
+                            <th scope="col" class="py-3 px-6 w-16">
                                 Sr No.
                             </th>
-                            <th scope="col" class="w-64 py-3 px-6">
+                            <th scope="col" class="py-3 px-6 w-64">
                                 Logs
                             </th>
-                            <th scope="col" class="w-56 py-3 px-6">
+                            <th scope="col" class="py-3 px-6 w-32">
                                 Modification Date
                             </th>
-                            <th scope="col" class="w-28 py-3 px-6">
+                            <th scope="col" class="py-3  w-16">
                                 Operation Type
                             </th>
                         </tr>
@@ -280,17 +293,20 @@ export default function ShowPlansPage() {
                     <tbody>
                         {sCurrsrch && sCurrsrch.map((logs) => {
                             return (
-                                <tr class="w-120 bg-white dark:bg-gray-800">
-                                    <th scope="row" class="w-12 py-3 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <tr class="bg-white dark:bg-gray-800">
+                                    <th scope="row" class="py-2 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white w-16">
                                         {logs.id}
                                     </th>
-                                    <td class="w-64 py-3 px-6">
+                                    <td class="py-2 px-6 w-64">
                                         {logs.entityJson}
                                     </td>
-                                    <td class="w-56 py-3 px-6">
-                                        {logs.modificationDate}
+                                    <td class="py-2 px-6 w-32">
+                                    {new Date(logs.modificationDate).toDateString()}
+                                        <span>  </span>
+                                        {new Date(logs.modificationDate).toLocaleTimeString()}
+                                        <span> IST</span>
                                     </td>
-                                    <td class="w-28 py-3 px-6">
+                                    <td class="py-2 px-6 w-16">
                                         {logs.operationType}
                                     </td>
                                 </tr>
