@@ -149,7 +149,7 @@ export default function ShowPlansPage() {
 
             {/*Heading*/}
 
-            <h3 class="text-center text-white text-lg pt-1"><b>All Audit Logs</b></h3>
+            <h3 class="text-center text-gray-800 text-lg pt-1"><b>All Audit Logs</b></h3>
             <center><hr class="w-56 my-2 h-px bg-gray-200 border-0 dark:bg-gray-700"></hr></center>
 
             <div class="flex flex-col p-10 pt-0">
@@ -195,14 +195,14 @@ export default function ShowPlansPage() {
                 {/*Buttons for increment and decrement*/}
 
                 { !isSearching && <div className="w-120 flex justify-center">
-                    <button class="text-white p-1 bg-blue" onClick={decrement}>
+                    <button class="text-gray-800 p-1 bg-blue" onClick={decrement}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </button>
 
 
-                    <button class="text-white p-1 bg-blue" onClick={increment}>
+                    <button class="text-gray-800 p-1 bg-blue" onClick={increment}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>

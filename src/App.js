@@ -35,7 +35,7 @@ export default function App() {
 
             {/* Main Area */}
 
-            < div className="pb-5 w-full h-full pt-5 flex flex-col flex-wrap content-center " >
+            < div className="pb-5 w-full h-full pt-5 flex flex-col flex-wrap bg-cover content-center bg-[url('./images/auditbg.png')] " >
                 <Routes>
                     <Route index element={<ShowPlansPage />} />
                     <Route path="getbyid" element={<GetByIdPage />} />
