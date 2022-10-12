@@ -45,7 +45,7 @@ export default function NavigationBar() {
                                     borderRadius: 12
                                 }}
                                 onClick={() => {
-                                    window.open("http://localhost:3000/app", "_blank")
+                                    window.open("http://localhost:3000/app", "_self")
                                 }}
                             >
                                 PLANit
