@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import { getAllLogs } from "../services/fetchService2";
 import { toast } from "react-toastify";
+import AutoSearch from "./AutoSearch";
 
 
 export default function ShowPlansPage() {
@@ -20,7 +21,10 @@ export default function ShowPlansPage() {
 
     //increment decrement states pagination for search
     const [si, setSi] = useState(0) //start index
-    const [ee, setEe] = useState(7) //end index
+    const [ee, setEe] = useState(7) //end 
+    
+    //autocomplete search
+    const [showAutoComp, setShowAutoComp] = useState(false)
 
 
     useEffect(() => {
@@ -68,11 +72,19 @@ export default function ShowPlansPage() {
 
 
     function handleSearch(e) {
+
+        if(e.target.value === '') {
+            setShowAutoComp(false)
+        }else {
+            setShowAutoComp(true)
+        }
+
         setSearchText(e.target.value)
     }
 
 
     function search() {
+        setShowAutoComp(false)
         console.log(searchText)
         if (searchText === '') {
             setIsSearching(false)
@@ -109,6 +121,54 @@ export default function ShowPlansPage() {
                 setSCurrsrch(searchResult.slice(si, ee))
             } else if (srchType === 'entity') {
                 let searchResult = AllLogs.filter((logs) => logs.entityJson.toLowerCase().includes(searchText.toLowerCase()))
+                console.log(searchResult)
+                setSAllsrch(searchResult)
+                setSi(0)
+                setEe(7)
+                setSCurrsrch(searchResult.slice(si, ee))
+            }
+        }
+
+    }
+
+    function search2(srTxt) {
+        setShowAutoComp(false)
+        console.log(srTxt)
+        if (srTxt === '') {
+            setIsSearching(false)
+        } else {
+            setIsSearching(true)
+        
+            if (srchType === 'id') {
+                if (isNaN(srTxt)) {
+                    toast.error("ID should be a number")
+                    return;
+                }
+                console.log(AllLogs)
+                let searchResult = AllLogs.filter((logs) => {
+                    // logs.entityJson.toLowerCase().includes(srTxt.toLowerCase())
+                    let myString = logs.entityJson.toLowerCase();
+                    let word = srTxt.toLowerCase();
+                    let pattern = `\\b${word}\\b`;
+                    let regExp = new RegExp(pattern, 'g');
+                    let isMatch = regExp.test(myString)
+                    return isMatch;
+                    
+                })
+                console.log(searchResult)
+                setSAllsrch(searchResult)
+                setSi(0)
+                setEe(7)
+                setSCurrsrch(searchResult.slice(si, ee))
+            } else if (srchType === 'operation') {
+                let searchResult = AllLogs.filter((logs) => logs.operationType.toLowerCase().includes(srTxt.toLowerCase()))
+                console.log(searchResult)
+                setSAllsrch(searchResult)
+                setSi(0)
+                setEe(7)
+                setSCurrsrch(searchResult.slice(si, ee))
+            } else if (srchType === 'entity') {
+                let searchResult = AllLogs.filter((logs) => logs.entityJson.toLowerCase().includes(srTxt.toLowerCase()))
                 console.log(searchResult)
                 setSAllsrch(searchResult)
                 setSi(0)
@@ -158,17 +218,17 @@ export default function ShowPlansPage() {
                     <div class="flex">
                         {/* <label for="search-dropdown" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Your Email</label> */}
                         {/* <button id="dropdown-button" data-dropdown-toggle="dropdown" class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" type="button">All categories <svg aria-hidden="true" class="ml-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button> */}
-                        <select onChange={handleSearchSelect} className="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100" aria-labelledby="dropdown-button">
+                        <select onChange={handleSearchSelect} className="h-10 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100" aria-labelledby="dropdown-button">
                             <option selected value="id" className="inline-flex py-2 px-4 w-full hover:bg-gray-100">Plan ID</option>
                             <option value="operation" >Operation</option>
                             <option value="entity" >Logs </option>
                         </select>
-                        <div id="dropdown" class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700" data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top">
 
-                        </div>
                         <div class="relative w-full">
-                            <input type="search" id="search-dropdown" value={searchText} onChange={handleSearch} class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg border-l-gray-50 border-l-2 border border-gray-300"
+                            <input type="search" id="search-dropdown" autoComplete="off" value={searchText} onChange={handleSearch} class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg border-l-gray-50 border-l-2 border border-gray-300"
                                 placeholder="Search for Audit Logs" />
+
+                                { showAutoComp && <AutoSearch setShowAutoComp={setShowAutoComp} AllLogs={AllLogs} setSearchText={setSearchText} searchText={searchText} srchType={srchType} search={search} search2={search2} />}
 
                             {isSearching && <button
                                 className="text-red-500 text-3xl absolute top-0 shadow-sm"
@@ -176,6 +236,7 @@ export default function ShowPlansPage() {
                                 onClick={() => {
                                     setSearchText('')
                                     setIsSearching(false)
+                                    setShowAutoComp(false)
                                 }}
                             >
                                 x

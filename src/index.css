@@ -34,3 +34,31 @@
   .transparent-bg {
     background-color: rgba(255, 255, 255, 0);
   }
+
+  .auto-search-container {
+    padding: 10px;
+    background: white;
+    max-height: 300px;
+    width: 96%;
+    position: absolute;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    overflow: scroll;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    padding-bottom: 0px;
+  }
+
+  .auto-search-container > ul > li {
+    margin: 2px;
+    padding: 3px;
+    padding-left: 16px;
+    /* border-bottom: 2px solid gray; */
+    cursor: pointer;
+  }
+  
+  .auto-search-container > ul > li:hover {
+    background: rgb(232, 232, 232);
+    border-right: 4px solid blue;
+  }
+
+  
